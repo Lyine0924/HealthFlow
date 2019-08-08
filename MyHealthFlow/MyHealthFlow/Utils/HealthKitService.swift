@@ -71,7 +71,18 @@ class HealthKitService {
             if results?.count ?? 0 > 0 {
                 for result in results as! [HKQuantitySample] {
                     if result.startDate >= from && result.endDate <= to {
-                        let rate = result.quantity.
+                        DispatchQueue.main.async(execute: { () -> Void in
+                            let formatedResult = self.getFormated(sample: result, forValue: HealthValue.hearth)
+                            print("formatedResult is : \(formatedResult)") // 이 변수를 가지고 평균 심박수를 만들면 됨.
+//                            let primaryKey = "\(result.startDate)\(result.endDate)"
+//                            if self.realm?.object(ofType: HearthRecord.self, forPrimaryKey: primaryKey) == nil {
+//                                do {
+//                                    try? self.realm?.write {
+//                                        patient.hearthRecords.append(hearthRecord)
+//                                    }
+//                                }
+//                            }
+                        })
                     }
                 }
             }
@@ -87,5 +98,48 @@ class HealthKitService {
         return (startDate, endDate)
     }
     
+    func getFormated(sample: HKQuantitySample, forValue: HealthValue) -> AnyObject {
+        var toFormat = "\(sample.quantity)"
+        switch forValue {
+        case .hearth:
+            toFormat = toFormat.replacingOccurrences(of: " count/min", with: "")
+            if let formated = Int(toFormat) {
+                return formated as AnyObject
+            } else {
+                return 0.0 as AnyObject
+            }
+        case .height:
+            toFormat = toFormat.replacingOccurrences(of: " cm", with: "")
+            toFormat = toFormat.replacingOccurrences(of: " m", with: "")
+            if let formated = Double(toFormat) {
+                return formated as AnyObject
+            } else {
+                return 0.0 as AnyObject
+            }
+        case .weight:
+            if toFormat.contains("lb") {
+                toFormat = toFormat.replacingOccurrences(of: " lb", with: "")
+                if let formated = Double(toFormat) {
+                    return formated as AnyObject
+                } else {
+                    return 0.0 as AnyObject
+                }
+            } else if toFormat.contains("g") {
+                toFormat = toFormat.replacingOccurrences(of: " g", with: "")
+                if let formated = Double(toFormat) {
+                    return formated as AnyObject
+                } else {
+                    return 0.0 as AnyObject
+                }
+            } else {
+                if (Double(toFormat) != nil) {
+                    return toFormat as AnyObject
+                } else {
+                    return 0.0 as AnyObject
+                }
+            }
+            
+        }
+    }
     
 }
