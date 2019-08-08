@@ -11,8 +11,8 @@ import HealthKit
 
 class OverviewTableVC: UITableViewController {
     
-    var steps = 1000
-    var heartRate = 80
+    var todaySteps = 0
+    var heartRate = 0
     
     var items = [String]()
     
@@ -34,7 +34,7 @@ class OverviewTableVC: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
-        HealthKitSetupAssistant.authorizeHealthKit { (authorized, error) in
+        HealthKitService.authorizeHealthKit { (authorized, error) in
             guard authorized else {
                 let baseMessage = "HealthKit Authorization Failed"
                 
@@ -48,18 +48,25 @@ class OverviewTableVC: UITableViewController {
         }
         print("HealthKit Successfully Authorized.")
         
+        setAllDetails()
+        
         self.tableView.delegate = self
         self.tableView.dataSource = self
     }
 
-    // MARK: - Table view data source
-
     
-//    override func numberOfSections(in tableView: UITableView) -> Int {
-//        // #warning Incomplete implementation, return the number of sections
-//        return self.tableView.numberOfSections
-//    }
- 
+    // 이부분도 참고 필요
+    func setAllDetails() {
+        let initialDate = Date(timeIntervalSince1970: TimeInterval())
+        let today = Date()
+        HealthKitService.shared.getStepsCount(forSpecificDate: today) { (steps) in
+            self.todaySteps = Int(steps)
+        }
+        HealthKitService.shared.getHearthRate(from: initialDate, to: today)
+    }
+    
+    
+    // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
@@ -73,7 +80,7 @@ class OverviewTableVC: UITableViewController {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: "RecordsCell", for: indexPath) as! RecordCell
             cell.title.text = "걸음수"
-            cell.Record.text = "\(self.steps) 회"
+            cell.Record.text = "\(self.todaySteps) 회"
             cell.lastRecordTime.text = "\(nowTime())"
             items.append(cell.title.text!)
             
@@ -108,6 +115,26 @@ class OverviewTableVC: UITableViewController {
             }
         }
     }
+    
+    // 걸음 수를 가져오는 함수
+    func getSteps(for Date:Date,completion:@escaping (Double) -> Void) {
+        let stepsQuantityType = HKQuantityType.quantityType(forIdentifier: .stepCount)!
+        
+        let startOfDay = Calendar.current.startOfDay(for: Date)
+        let endOfDay = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: startOfDay)
+        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: endOfDay, options: .strictStartDate)
+        
+        let query = HKStatisticsQuery(quantityType: stepsQuantityType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _ , result , error in
+            guard let result = result, let sum = result.sumQuantity() else {
+                print("there is a query error : \(error)")
+                completion(0.0)
+                return
+            }
+            completion(sum.doubleValue(for: HKUnit.count()))
+        }
+        HKHealthStore().execute(query)
+    }
+    
 
     /*
     // Override to support conditional editing of the table view.

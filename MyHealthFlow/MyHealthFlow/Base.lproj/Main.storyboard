@@ -80,7 +80,7 @@
         <!--Title-->
         <scene sceneID="xbz-Hf-9mv">
             <objects>
-                <viewController storyboardIdentifier="RecordDetailVC" id="pbc-5I-lxN" customClass="RecordDetailVC" customModule="MyHealthFlow" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="RecordDetailVC" id="pbc-5I-lxN" customClass="RecordDetailVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="oZx-vQ-uY0">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
