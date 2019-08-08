@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="yKz-S5-mao">
+    <device id="retina5_9" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--건강정보-->
+        <scene sceneID="O7b-4I-bCX">
+            <objects>
+                <tableViewController id="9yc-fY-lhu" customClass="OverviewTableVC" customModule="MyHealthFlow" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="8nj-qp-bSj">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="RecordsCell" rowHeight="120" id="F2b-rG-vVk" customClass="RecordCell" customModule="MyHealthFlow" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="120"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="F2b-rG-vVk" id="L4n-gT-pye">
+                                    <rect key="frame" x="0.0" y="0.0" width="341" height="119.66666666666667"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="오전 11:59" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iHI-CN-Ck5">
+                                            <rect key="frame" x="266" y="49.333333333333336" width="75" height="21.000000000000007"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xe9-y6-FyQ">
+                                            <rect key="frame" x="16" y="11" width="48" height="24"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ph3-Wj-IzJ">
+                                            <rect key="frame" x="16" y="41.666666666666657" width="180" height="36.333333333333343"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="180" id="MiH-qI-p18"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="Xe9-y6-FyQ" firstAttribute="leading" secondItem="L4n-gT-pye" secondAttribute="leadingMargin" id="1w0-N6-KFG"/>
+                                        <constraint firstAttribute="bottom" secondItem="Ph3-Wj-IzJ" secondAttribute="bottom" constant="41.666666666666671" id="6Cb-q6-jwq"/>
+                                        <constraint firstItem="Xe9-y6-FyQ" firstAttribute="top" secondItem="L4n-gT-pye" secondAttribute="topMargin" id="LXK-Ll-19g"/>
+                                        <constraint firstItem="Ph3-Wj-IzJ" firstAttribute="leading" secondItem="L4n-gT-pye" secondAttribute="leadingMargin" id="PcC-cM-Shd"/>
+                                        <constraint firstItem="Ph3-Wj-IzJ" firstAttribute="centerY" secondItem="L4n-gT-pye" secondAttribute="centerY" id="mao-an-vda"/>
+                                        <constraint firstItem="iHI-CN-Ck5" firstAttribute="centerY" secondItem="L4n-gT-pye" secondAttribute="centerY" id="t0D-Or-koy"/>
+                                        <constraint firstAttribute="trailing" secondItem="iHI-CN-Ck5" secondAttribute="trailing" id="vih-G8-DAr"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="Record" destination="Ph3-Wj-IzJ" id="jDP-MW-ebb"/>
+                                    <outlet property="lastRecordTime" destination="iHI-CN-Ck5" id="z9F-AI-yFG"/>
+                                    <outlet property="title" destination="Xe9-y6-FyQ" id="0Eb-Au-zb7"/>
+                                    <segue destination="pbc-5I-lxN" kind="show" identifier="showDetailRecord" id="EyY-ax-zNo"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="9yc-fY-lhu" id="2iH-Ve-oLM"/>
+                            <outlet property="delegate" destination="9yc-fY-lhu" id="TMv-pe-Nbi"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="건강정보" id="GuM-6o-Gu6"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pFh-Qc-6hx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1872.8" y="506.89655172413796"/>
+        </scene>
+        <!--Title-->
+        <scene sceneID="xbz-Hf-9mv">
+            <objects>
+                <viewController storyboardIdentifier="RecordDetailVC" id="pbc-5I-lxN" customClass="RecordDetailVC" customModule="MyHealthFlow" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="oZx-vQ-uY0">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="tau-An-syf"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Title" id="QY9-nT-SOL"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9Kd-ui-RvL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2870" y="507"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Bqf-aT-AIN">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yKz-S5-mao" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="9i8-Vt-Kl1">
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="9yc-fY-lhu" kind="relationship" relationship="rootViewController" id="kxg-kY-FfE"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BPj-dH-Ppm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="858" y="507"/>
+        </scene>
+    </scenes>
+</document>
