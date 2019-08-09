@@ -64,31 +64,44 @@ class HealthKitService {
         healthKitStore.execute(query)
     }
     
-    // 심박수에 관한 정보 가져오는 부분
-    func getHearthRate(from: Date, to: Date) {
-        let hearthRateSample = HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)
-        let query = HKSampleQuery(sampleType: hearthRateSample!, predicate: .none, limit: 0, sortDescriptors: nil) { query, results, error in
-            if results?.count ?? 0 > 0 {
-                for result in results as! [HKQuantitySample] {
-                    if result.startDate >= from && result.endDate <= to {
-                        DispatchQueue.main.async(execute: { () -> Void in
-                            let formatedResult = self.getFormated(sample: result, forValue: HealthValue.hearth)
-                            print("formatedResult is : \(formatedResult)") // 이 변수를 가지고 평균 심박수를 만들면 됨.
-//                            let primaryKey = "\(result.startDate)\(result.endDate)"
-//                            if self.realm?.object(ofType: HearthRecord.self, forPrimaryKey: primaryKey) == nil {
-//                                do {
-//                                    try? self.realm?.write {
-//                                        patient.hearthRecords.append(hearthRecord)
-//                                    }
-//                                }
-//                            }
-                        })
-                    }
-                }
+    @available(iOS 12.0, *)
+    // 심박수에 관한 정보 가져오는 부분 -> 현재는 최근 심박수를 가져오는 기능을 담당함
+    func getHearthRate(from: Date, to: Date, completion: @escaping (Double) -> Void) {
+        let hearthRateType = HKSampleType.quantityType(forIdentifier: .heartRate)!
+        let now = Date()
+        let startOfDay = Calendar.current.startOfDay(for:now)
+        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
+        
+    
+        // replaced options parameter with .discreteMostRecent
+        let query = HKStatisticsQuery(quantityType: hearthRateType, quantitySamplePredicate: predicate, options: .discreteMostRecent){
+             (_,result,error) in
+            var resultCount = 0
+            guard let result = result else {
+                print("Failed to fetch heart rate")
+                completion(Double(resultCount))
+                return
+            }
+            
+            // More cahanges here in order to get bpm value
+            guard let beatsPerMinute: Double = result.mostRecentQuantity()?.doubleValue(for: HKUnit.count().unitDivided(by: HKUnit.minute())) else { return }
+            
+            DispatchQueue.main.async {
+                resultCount = Int(beatsPerMinute)
+                print("resultCount is : \(resultCount)")
             }
         }
         healthKitStore.execute(query)
     }
+    /*
+    func createAndExecuteQueries(Type:Qu ,predicate: NSPredicate, option: HKStatisticsOptions, handler: (HKStatisticsQuery, HKStatistics?, NSError?) -> Void) {
+
+        let query = HKStatisticsQuery(quantityType: heartRateType, quantitySamplePredicate: predicate, options:[option], completionHandler: handler)
+
+        healthKitStore.executeQuery(query)
+
+    }
+    */
     
     func getWholeDate(date: Date) -> (startDate:Date, endDate: Date) {
         var startDate = date
@@ -141,5 +154,23 @@ class HealthKitService {
             
         }
     }
+    
+    
+    func getFormated(sample:HKQuantity, forValue: HealthValue) -> AnyObject {
+        var toFormat = "\(sample)"
+        if forValue == .hearth {
+            toFormat = toFormat.replacingOccurrences(of: " count/s", with: "")
+            if let formated = Int(toFormat) {
+                return formated as AnyObject
+            } else {
+                return 0.0 as AnyObject
+            }
+        }
+        else {
+            return 0.0 as AnyObject
+        }
+    }
+    
+    
     
 }

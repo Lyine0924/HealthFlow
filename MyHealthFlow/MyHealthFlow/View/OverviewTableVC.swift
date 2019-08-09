@@ -14,16 +14,33 @@ class OverviewTableVC: UITableViewController {
     var todaySteps = 0
     var heartRate = 0
     
-    var items = [String]()
+    var items = NSMutableDictionary()
     
     
-    func nowTime()-> String{
-        let now = Date()
+    func hoursAgo(to: Int)-> Date{
         let dateFormatter = DateFormatter()
-        // Locale
-        dateFormatter.locale = Locale(identifier: "ko_KR")
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        return dateFormatter.string(from: now)
+                
+        let strDate = dateFormatter.string(from: Date())//오늘 날짜를 string 타입으로 변경
+          
+                
+        dateFormatter.timeZone = NSTimeZone(name: "GMT") as TimeZone?
+        let dateStr = dateFormatter.date(from: strDate)
+        
+        let cal = NSCalendar.current
+                
+        guard let hoursAgo = cal.date(byAdding: .day, value: -to, to: dateStr!) else { return Date() }
+        return hoursAgo
+    }
+    
+    func nowTime() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        dateFormatter.locale = NSLocale(localeIdentifier: "ko_KR") as Locale
+        
+        let strDate = dateFormatter.string(from: Date())//오늘 날짜를 string 타입으로 변경
+          
+        return strDate
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,21 +65,31 @@ class OverviewTableVC: UITableViewController {
         }
         print("HealthKit Successfully Authorized.")
         
-        setAllDetails()
-        
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        
+        self.setAllDetails()
+        
+        
     }
 
     
     // 이부분도 참고 필요
     func setAllDetails() {
-        let initialDate = Date(timeIntervalSince1970: TimeInterval())
         let today = Date()
+        let initialDate = hoursAgo(to:2)
+        //let initialDate = Date(timeIntervalSince1970: TimeInterval())
         HealthKitService.shared.getStepsCount(forSpecificDate: today) { (steps) in
             self.todaySteps = Int(steps)
+            print("todaySteps is : \(self.todaySteps)")
+            self.items.setValue(steps, forKey: "steps")
         }
-        HealthKitService.shared.getHearthRate(from: initialDate, to: today)
+        HealthKitService.shared.getHearthRate(from: initialDate, to: today) { (heartRate) in
+            self.heartRate = Int(heartRate)
+            print("heartRate now is : \(self.heartRate)")
+            self.items.setValue(heartRate, forKey: "bpm")
+        }
+        
     }
     
     
@@ -70,7 +97,8 @@ class OverviewTableVC: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 2
+        return items.count
+        
     }
 
     
@@ -80,24 +108,24 @@ class OverviewTableVC: UITableViewController {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: "RecordsCell", for: indexPath) as! RecordCell
             cell.title.text = "걸음수"
-            cell.Record.text = "\(self.todaySteps) 회"
+            cell.Record.text = "\(self.items["steps"] ?? 0) 회"
             cell.lastRecordTime.text = "\(nowTime())"
-            items.append(cell.title.text!)
+            
             
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "RecordsCell", for: indexPath) as! RecordCell
             cell.title.text = "심박수"
-            cell.Record.text = "\(self.heartRate) bpm"
+            cell.Record.text = "\(self.items["bpm"] ?? 0) bpm"
             cell.lastRecordTime.text = "\(nowTime())"
-            items.append(cell.title.text!)
+            
             return cell
         default:
             let cell = tableView.dequeueReusableCell(withIdentifier: "RecordsCell", for: indexPath) as! RecordCell
             cell.title.text = "항목없음"
             cell.Record.text = ""
             cell.lastRecordTime.text = "\(nowTime())"
-            items.append(cell.title.text!)
+            
             return cell
         }
         
@@ -116,24 +144,24 @@ class OverviewTableVC: UITableViewController {
         }
     }
     
-    // 걸음 수를 가져오는 함수
-    func getSteps(for Date:Date,completion:@escaping (Double) -> Void) {
-        let stepsQuantityType = HKQuantityType.quantityType(forIdentifier: .stepCount)!
-        
-        let startOfDay = Calendar.current.startOfDay(for: Date)
-        let endOfDay = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: startOfDay)
-        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: endOfDay, options: .strictStartDate)
-        
-        let query = HKStatisticsQuery(quantityType: stepsQuantityType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _ , result , error in
-            guard let result = result, let sum = result.sumQuantity() else {
-                print("there is a query error : \(error)")
-                completion(0.0)
-                return
-            }
-            completion(sum.doubleValue(for: HKUnit.count()))
-        }
-        HKHealthStore().execute(query)
-    }
+//    // 걸음 수를 가져오는 함수
+//    func getSteps(for Date:Date,completion:@escaping (Double) -> Void) {
+//        let stepsQuantityType = HKQuantityType.quantityType(forIdentifier: .stepCount)!
+//
+//        let startOfDay = Calendar.current.startOfDay(for: Date)
+//        let endOfDay = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: startOfDay)
+//        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: endOfDay, options: .strictStartDate)
+//
+//        let query = HKStatisticsQuery(quantityType: stepsQuantityType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _ , result , error in
+//            guard let result = result, let sum = result.sumQuantity() else {
+//                print("there is a query error : \(error)")
+//                completion(0.0)
+//                return
+//            }
+//            completion(sum.doubleValue(for: HKUnit.count()))
+//        }
+//        HKHealthStore().execute(query)
+//    }
     
 
     /*
