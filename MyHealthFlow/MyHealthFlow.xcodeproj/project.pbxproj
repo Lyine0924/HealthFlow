@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3E25511322FC1CB200596CC2 /* utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E25511222FC1CB200596CC2 /* utils.swift */; };
+		3E332E24230161340023894F /* HealthDataType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E332E23230161340023894F /* HealthDataType.swift */; };
 		3E3C88C822FB9B3700257B69 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3C88C722FB9B3700257B69 /* AppDelegate.swift */; };
 		3E3C88CD22FB9B3700257B69 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E3C88CB22FB9B3700257B69 /* Main.storyboard */; };
 		3E3C88D022FB9B3700257B69 /* MyHealthFlow.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3E3C88CE22FB9B3700257B69 /* MyHealthFlow.xcdatamodeld */; };
@@ -22,6 +23,7 @@
 
 /* Begin PBXFileReference section */
 		3E25511222FC1CB200596CC2 /* utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = utils.swift; sourceTree = "<group>"; };
+		3E332E23230161340023894F /* HealthDataType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HealthDataType.swift; path = "../../../../../../../myeongsoo-Linne/Lemonhc/ws/HealthFlow/MyHealthFlow/MyHealthFlow/Model/HealthDataType.swift"; sourceTree = "<group>"; };
 		3E3C88C422FB9B3700257B69 /* MyHealthFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyHealthFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E3C88C722FB9B3700257B69 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3E3C88CC22FB9B3700257B69 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				3EFC269422FBE5B800F4098B /* Cell */,
+				3E332E23230161340023894F /* HealthDataType.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -204,6 +207,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3EFC269A22FC08F700F4098B /* RecordCell.swift in Sources */,
+				3E332E24230161340023894F /* HealthDataType.swift in Sources */,
 				3E25511322FC1CB200596CC2 /* utils.swift in Sources */,
 				3E3C88E622FBAD1D00257B69 /* HealthKitService.swift in Sources */,
 				3E745C3022FC09D2007D7666 /* RecordDetailVC.swift in Sources */,
