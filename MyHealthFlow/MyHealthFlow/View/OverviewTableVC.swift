@@ -12,9 +12,13 @@ import HealthKit
 class OverviewTableVC: UITableViewController {
     
     var todaySteps = 0
+    
     var heartRate = 0
     
     var items = NSMutableDictionary()
+    
+    @IBOutlet weak var indicatorView: UIActivityIndicatorView!
+    
     
     
     func hoursAgo(to: Int)-> Date{
@@ -44,7 +48,7 @@ class OverviewTableVC: UITableViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -64,14 +68,24 @@ class OverviewTableVC: UITableViewController {
             }
         }
         print("HealthKit Successfully Authorized.")
-        
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
-        
-        self.setAllDetails()
-        
-        
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.setAllDetails()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        reloadTables()
+    }
+    
+    @objc func reloadTables() {
+        if let tableView = self.tableView{
+            tableView.reloadData()
+        }
+    }
+
 
     
     // 이부분도 참고 필요
@@ -79,16 +93,17 @@ class OverviewTableVC: UITableViewController {
         let today = Date()
         let initialDate = hoursAgo(to:2)
         //let initialDate = Date(timeIntervalSince1970: TimeInterval())
-        HealthKitService.shared.getStepsCount(forSpecificDate: today) { (steps) in
-            self.todaySteps = Int(steps)
-            print("todaySteps is : \(self.todaySteps)")
-            self.items.setValue(steps, forKey: "steps")
-        }
-        HealthKitService.shared.getHearthRate(from: initialDate, to: today) { (heartRate) in
-            self.heartRate = Int(heartRate)
-            print("heartRate now is : \(self.heartRate)")
-            self.items.setValue(heartRate, forKey: "bpm")
-        }
+        //self.indicatorView.startAnimating()
+       HealthKitService.shared.getStepsCount(forSpecificDate: today) { (steps) in
+           self.todaySteps = Int(steps)
+           print("todaySteps is : \(self.todaySteps)")
+           self.items.setValue(self.todaySteps, forKey: "steps")
+       }
+       HealthKitService.shared.getHearthRate(from: initialDate, to: today) { (heartRate) in
+           self.heartRate = Int(heartRate)
+           print("heartRate now is : \(self.heartRate)")
+           self.items.setValue(self.heartRate, forKey: "bpm")
+       }
         
     }
     
@@ -97,7 +112,7 @@ class OverviewTableVC: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return items.count
+        return 2
         
     }
 
@@ -110,7 +125,6 @@ class OverviewTableVC: UITableViewController {
             cell.title.text = "걸음수"
             cell.Record.text = "\(self.items["steps"] ?? 0) 회"
             cell.lastRecordTime.text = "\(nowTime())"
-            
             
             return cell
         case 1:
@@ -129,7 +143,6 @@ class OverviewTableVC: UITableViewController {
             return cell
         }
         
-        // Configure the cell...
     }
     
     //didSelectRowAt 보다 먼저 실행됨

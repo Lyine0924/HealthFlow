@@ -64,7 +64,6 @@ class HealthKitService {
         healthKitStore.execute(query)
     }
     
-    @available(iOS 12.0, *)
     // 심박수에 관한 정보 가져오는 부분 -> 현재는 최근 심박수를 가져오는 기능을 담당함
     func getHearthRate(from: Date, to: Date, completion: @escaping (Double) -> Void) {
         let hearthRateType = HKSampleType.quantityType(forIdentifier: .heartRate)!
@@ -79,6 +78,7 @@ class HealthKitService {
             var resultCount = 0
             guard let result = result else {
                 print("Failed to fetch heart rate")
+                print("error is occured : \(error?.localizedDescription)")
                 completion(Double(resultCount))
                 return
             }
@@ -86,10 +86,9 @@ class HealthKitService {
             // More cahanges here in order to get bpm value
             guard let beatsPerMinute: Double = result.mostRecentQuantity()?.doubleValue(for: HKUnit.count().unitDivided(by: HKUnit.minute())) else { return }
             
-            DispatchQueue.main.async {
-                resultCount = Int(beatsPerMinute)
-                print("resultCount is : \(resultCount)")
-            }
+            resultCount = Int(beatsPerMinute)
+            print("resultCount is : \(resultCount)")
+            completion(Double(resultCount))
         }
         healthKitStore.execute(query)
     }
